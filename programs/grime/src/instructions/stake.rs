@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 
 use crate::{
     constants::{ GLOBAL_STATE_SEED, TOKEN_VAULT_SEED, USER_INFO_SEED },
-    state::{Global, UserInfo},
+    state::{Global, UserInfo, UserData},
     error::*,
 };
 use std::mem::size_of;
@@ -22,7 +22,7 @@ pub fn deposit(ctx: Context<Deposit>, amount: u64) -> Result<()> {
     Ok(())
 }
 
-pub fn stake(ctx: Context<StakeGrime>, option: u8, amount: u64) -> Result<()> {
+pub fn stake(ctx: Context<StakeGrime>, option: u8, index: u32, amount: u64) -> Result<()> {
     let accts = ctx.accounts;
 
     require!(accts.user_info.status != true, GrimeCode::AlreadyStake);
@@ -38,6 +38,23 @@ pub fn stake(ctx: Context<StakeGrime>, option: u8, amount: u64) -> Result<()> {
     accts.user_info.amount = amount;
     accts.user_info.option = option;
     accts.user_info.status = true;
+    accts.user_info.index = index;
+
+    match option {
+        1_u8 => {
+            require!(accts.user_data.week_count + 1 == index, GrimeCode::AlreadyStake);
+            accts.user_data.week_count += 1;
+        },
+        2_u8 => {
+            require!(accts.user_data.month_count + 1 == index, GrimeCode::AlreadyStake);
+            accts.user_data.month_count += 1;
+        },
+        3_u8 => {
+            require!(accts.user_data.year_count + 1 == index, GrimeCode::AlreadyStake);
+            accts.user_data.year_count += 1;
+        },
+        0_u8 | 4_u8..=u8::MAX => todo!() 
+    }
 
     // stake grime tokens to the token vault account
     let cpi_ctx = CpiContext::new(
@@ -53,7 +70,7 @@ pub fn stake(ctx: Context<StakeGrime>, option: u8, amount: u64) -> Result<()> {
     Ok(())
 }
 
-pub fn unstake(ctx: Context<StakeGrime>, option: u8) -> Result<()> {
+pub fn unstake(ctx: Context<StakeGrime>, option: u8, index: u32) -> Result<()> {
     let accts = ctx.accounts;
 
     require!(accts.user_info.status == true, GrimeCode::AlreadyStake);
@@ -65,14 +82,17 @@ pub fn unstake(ctx: Context<StakeGrime>, option: u8) -> Result<()> {
     match accts.user_info.option {
         1_u8 => {
             passing_time = 7 * 3600 * 24;
+
             apy = 1;
         },
         2_u8=> {
             passing_time = 7 * 3600 * 24 * 30;
+
             apy = 5;
         },
         3_u8 => {
             passing_time = 7 * 3600 * 24 * 365;
+
             apy = 69;
         },
         _ => {
@@ -80,14 +100,16 @@ pub fn unstake(ctx: Context<StakeGrime>, option: u8) -> Result<()> {
         }
     }
 
-    require!(accts.clock.unix_timestamp < accts.user_info.start_time + passing_time, GrimeCode::NotWithdrawTime);
+    require!(accts.clock.unix_timestamp > accts.user_info.start_time + passing_time, GrimeCode::NotWithdrawTime);
  
     accts.user_info.start_time = accts.clock.unix_timestamp;
     accts.user_info.option = 0;
     accts.user_info.status = false;
 
     let claim_amount = accts.user_info.amount;
-    let reward = claim_amount * (accts.clock.unix_timestamp as u64 - accts.user_info.start_time as u64) / passing_time as u64 * apy / 100;
+    msg!("claim_amount{}:",claim_amount);
+    let reward = claim_amount  * apy / 100;
+    msg!("reward{}:",reward);
 
     accts.user_info.amount = 0;
 
@@ -145,7 +167,7 @@ pub struct Deposit<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(option: u8)]
+#[instruction(option: u8, index: u32)]
 pub struct StakeGrime<'info> {
     #[account(mut)]
     pub user:  Signer<'info>,
@@ -160,7 +182,16 @@ pub struct StakeGrime<'info> {
     #[account(
         init_if_needed,
         payer = user,
-        seeds = [USER_INFO_SEED, user.key().as_ref(), option.to_le_bytes().as_ref()],
+        seeds = [USER_INFO_SEED, user.key().as_ref()],
+        bump,
+        space = 8 + size_of::<UserData>()
+    )]
+    pub user_data: Box<Account<'info, UserData>>,
+
+    #[account(
+        init_if_needed,
+        payer = user,
+        seeds = [USER_INFO_SEED, user.key().as_ref(), option.to_le_bytes().as_ref(),index.to_le_bytes().as_ref()],
         bump,
         space = 8 + size_of::<UserInfo>()
     )]

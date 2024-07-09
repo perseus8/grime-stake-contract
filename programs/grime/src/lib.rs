@@ -9,7 +9,7 @@ pub use constants::*;
 use instructions::*;
 pub use state::*;
 
-declare_id!("FwCfGNt8XdsFQy7X2N14Sod7gk8aAj5jB3Q7Bt6neZRe");
+declare_id!("6Ljyy7jHPEZ6TqBDteGTZMEnZJNrzRkGHnEtktm8mp8c");
 
 #[program]
 pub mod grime {
@@ -31,11 +31,11 @@ pub mod grime {
         instructions::deposit(ctx, amount)
     }
 
-    pub fn stake(ctx: Context<StakeGrime>,option: u8, amount: u64) -> Result<()> {
-        instructions::stake(ctx, option, amount)
+    pub fn stake(ctx: Context<StakeGrime>,option: u8, index: u32,amount: u64) -> Result<()> {
+        instructions::stake(ctx, option, index,amount)
     }
 
-    pub fn unstake(ctx: Context<StakeGrime>, option: u8) -> Result<()> {
-        instructions::unstake(ctx, option)
+    pub fn unstake(ctx: Context<StakeGrime>, option: u8, index: u32) -> Result<()> {
+        instructions::unstake(ctx, option, index)
     }
 }

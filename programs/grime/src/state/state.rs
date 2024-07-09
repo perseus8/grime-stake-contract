@@ -7,9 +7,19 @@ pub struct Global {
     pub token_vault: Pubkey,    
 }
 
+
+#[account]
+pub struct UserData {
+    pub owner: Pubkey,
+    pub week_count: u32, // 1: week 2: month 3: year
+    pub month_count: u32, // 1: week 2: month 3: year
+    pub year_count: u32, // 1: week 2: month 3: year
+}
+
 #[account]
 pub struct UserInfo {
     pub initialized: bool,
+    pub index: u32,
     pub owner: Pubkey,
     pub amount: u64,
     pub start_time: i64,

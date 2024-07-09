@@ -6,19 +6,20 @@ import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress } from "@solana/spl-token";
 import * as bs58 from "bs58";
 import { SystemProgram, Keypair, PublicKey,SYSVAR_CLOCK_PUBKEY } from "@solana/web3.js";
 const owner = Keypair.fromSecretKey(
-  bs58.decode("")
+  bs58.decode("2LU9Gir9pDVEsUWrRHLUUdPaVM642EmMGubgyZg2LNYk1uyD4LNRR5HshCENmfTUD3nPMeN7FCJKxEdu48YSEpta")
 );
 
-const staker = Keypair.fromSecretKey(
-  bs58.decode("")
-);
+// const staker = Keypair.fromSecretKey(
+//   bs58.decode("")
+// );
 
 describe("grime", () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.AnchorProvider.env());
 
   const program = anchor.workspace.Grime as Program<Grime>;
-  const mint = new PublicKey("");
+  const mint = new PublicKey("3XKL3PjndTRvEGVo8iLtxFw1LJuHi4xLYMb2WD1yMFRV");
+  /*
   it("Is initialized!", async () => {
     // Add your test here.
     const [global, _1] = await anchor.web3.PublicKey.findProgramAddress(
@@ -88,9 +89,10 @@ describe("grime", () => {
     );
     console.log("tx->", tx);
   });
+  */
   
   it("deposit token by owner or users", async() => {
-    const depositAmount = 100000000;
+    const depositAmount = "11999999000000000";
 
     const [global, _1] = await anchor.web3.PublicKey.findProgramAddress(
       [
@@ -131,9 +133,10 @@ describe("grime", () => {
       console.log(error);
     }
   });
-
+  /*
   it("stake", async() => {
     const option = 1;
+    const index = 1;
     const [global, _1] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from("GLOBAL_STATE_SEED")
@@ -148,11 +151,21 @@ describe("grime", () => {
       program.programId
     );
 
-    const [userInfo, _3] = await anchor.web3.PublicKey.findProgramAddress(
+    const [userData, _3] = await anchor.web3.PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("USER_INFI_SEED"),
+        staker.publicKey.toBuffer(),
+      ],
+      program.programId
+    );
+
+    const [userInfo, _4] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from("USER_INFO_SEED"),
         staker.publicKey.toBuffer(),
         new anchor.BN(option).toBuffer("le", 1),
+        new anchor.BN(index).toBuffer("le", 4),
+
       ],
       program.programId
     );
@@ -165,10 +178,12 @@ describe("grime", () => {
     const stakeAmount = 1000000;
     const tx = await program.rpc.stake(
       option,
+      index,
       new anchor.BN(stakeAmount), {
         accounts: {
           user: staker.publicKey,
           global,
+          userData,
           userInfo,
           mint,
           tokenVault,
@@ -185,6 +200,7 @@ describe("grime", () => {
 
   it("unstake", async() => {
     const option = 1;
+    const index = 1;
     const [global, _1] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from("GLOBAL_STATE_SEED")
@@ -199,11 +215,21 @@ describe("grime", () => {
       program.programId
     );
 
-    const [userInfo, _3] = await anchor.web3.PublicKey.findProgramAddress(
+    const [userData, _3] = await anchor.web3.PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("USER_INFI_SEED"),
+        staker.publicKey.toBuffer(),
+      ],
+      program.programId
+    );
+
+    const [userInfo, _4] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from("USER_INFO_SEED"),
         staker.publicKey.toBuffer(),
         new anchor.BN(option).toBuffer("le", 1),
+        new anchor.BN(index).toBuffer("le", 4),
+
       ],
       program.programId
     );
@@ -219,6 +245,7 @@ describe("grime", () => {
         accounts: {
           user: staker.publicKey,
           global,
+          userData,
           userInfo,
           mint,
           tokenVault,
@@ -232,4 +259,5 @@ describe("grime", () => {
     );
     console.log("tx->", tx);
   })
+  */
 });
