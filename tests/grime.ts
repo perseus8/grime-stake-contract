@@ -5,6 +5,8 @@ import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress } from "@solana/spl-token";
 
 import * as bs58 from "bs58";
 import { SystemProgram, Keypair, PublicKey,SYSVAR_CLOCK_PUBKEY } from "@solana/web3.js";
+
+//to do things
 const owner = Keypair.fromSecretKey(
   bs58.decode("2LU9Gir9pDVEsUWrRHLUUdPaVM642EmMGubgyZg2LNYk1uyD4LNRR5HshCENmfTUD3nPMeN7FCJKxEdu48YSEpta")
 );
@@ -18,8 +20,8 @@ describe("grime", () => {
   anchor.setProvider(anchor.AnchorProvider.env());
 
   const program = anchor.workspace.Grime as Program<Grime>;
-  const mint = new PublicKey("3XKL3PjndTRvEGVo8iLtxFw1LJuHi4xLYMb2WD1yMFRV");
-  /*
+  const mint = new PublicKey("GJeK3GxUy13YXEp5LprbraSmXfSzDM7uAnuGMvymvCpU");
+  
   it("Is initialized!", async () => {
     // Add your test here.
     const [global, _1] = await anchor.web3.PublicKey.findProgramAddress(
@@ -52,87 +54,87 @@ describe("grime", () => {
     console.log("Your transaction signature", tx);
   });
 
-  it("set pause", async() => {
-    const [global, _1] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from("GLOBAL_STATE_SEED")
-      ],
-      program.programId
-    );
-    const tx = await program.rpc.setPause(
-      {
-        accounts: {
-          owner: owner.publicKey,
-          global
-        },
-        signers: [owner]
-      }
-    );
-    console.log("tx->", tx);
-  });
+  // it("set pause", async() => {
+  //   const [global, _1] = await anchor.web3.PublicKey.findProgramAddress(
+  //     [
+  //       Buffer.from("GLOBAL_STATE_SEED")
+  //     ],
+  //     program.programId
+  //   );
+  //   const tx = await program.rpc.setPause(
+  //     {
+  //       accounts: {
+  //         owner: owner.publicKey,
+  //         global
+  //       },
+  //       signers: [owner]
+  //     }
+  //   );
+  //   console.log("tx->", tx);
+  // });
 
-  it("set start", async() => {
-    const [global, _1] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from("GLOBAL_STATE_SEED")
-      ],
-      program.programId
-    );
-    const tx = await program.rpc.setStart(
-      {
-        accounts: {
-          owner: owner.publicKey,
-          global
-        },
-        signers: [owner]
-      }
-    );
-    console.log("tx->", tx);
-  });
-  */
+  // it("set start", async() => {
+  //   const [global, _1] = await anchor.web3.PublicKey.findProgramAddress(
+  //     [
+  //       Buffer.from("GLOBAL_STATE_SEED")
+  //     ],
+  //     program.programId
+  //   );
+  //   const tx = await program.rpc.setStart(
+  //     {
+  //       accounts: {
+  //         owner: owner.publicKey,
+  //         global
+  //       },
+  //       signers: [owner]
+  //     }
+  //   );
+  //   console.log("tx->", tx);
+  // });
   
-  it("deposit token by owner or users", async() => {
-    const depositAmount = "11999999000000000";
+  
+  // it("deposit token by owner or users", async() => {
+  //   const depositAmount = "11999999000000000";
 
-    const [global, _1] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from("GLOBAL_STATE_SEED")
-      ],
-      program.programId
-    );
+  //   const [global, _1] = await anchor.web3.PublicKey.findProgramAddress(
+  //     [
+  //       Buffer.from("GLOBAL_STATE_SEED")
+  //     ],
+  //     program.programId
+  //   );
 
-    const [tokenVault, _2] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from("TOKEN_VAULT_SEED")
-      ],
-      program.programId
-    );
+  //   const [tokenVault, _2] = await anchor.web3.PublicKey.findProgramAddress(
+  //     [
+  //       Buffer.from("TOKEN_VAULT_SEED")
+  //     ],
+  //     program.programId
+  //   );
 
-    const userTokenAccount = await getAssociatedTokenAddress(
-      mint,
-      owner.publicKey
-    );
+  //   const userTokenAccount = await getAssociatedTokenAddress(
+  //     mint,
+  //     owner.publicKey
+  //   );
 
-    try {
-      const tx = await program.rpc.deposit(
-        new anchor.BN(depositAmount),{
-          accounts: {
-            user: owner.publicKey,
-            global,
-            mint,
-            tokenVault,
-            userTokenAccount,
-            systemProgram: SystemProgram.programId,
-            tokenProgram: TOKEN_PROGRAM_ID
-          },
-          signers: [owner]
-        }
-      );
-      console.log(tx);
-    } catch (error) {
-      console.log(error);
-    }
-  });
+  //   try {
+  //     const tx = await program.rpc.deposit(
+  //       new anchor.BN(depositAmount),{
+  //         accounts: {
+  //           user: owner.publicKey,
+  //           global,
+  //           mint,
+  //           tokenVault,
+  //           userTokenAccount,
+  //           systemProgram: SystemProgram.programId,
+  //           tokenProgram: TOKEN_PROGRAM_ID
+  //         },
+  //         signers: [owner]
+  //       }
+  //     );
+  //     console.log(tx);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // });
   /*
   it("stake", async() => {
     const option = 1;

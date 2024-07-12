@@ -4,14 +4,14 @@
 resolution = true
 skip-lint = false
 
-[programs.devnet]
+[programs.mainnet]
 grime = "6Ljyy7jHPEZ6TqBDteGTZMEnZJNrzRkGHnEtktm8mp8c"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+cluster = "mainnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
