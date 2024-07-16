@@ -6,7 +6,7 @@ use crate::{
     error::*,
 };
 
-use anchor_spl::token::{Mint,Token,TokenAccount,Transfer, transfer};
+use anchor_spl::token::{Mint,Token,TokenAccount};
 
 use std::mem::size_of;
 

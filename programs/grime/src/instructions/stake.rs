@@ -70,29 +70,26 @@ pub fn stake(ctx: Context<StakeGrime>, option: u8, index: u32, amount: u64) -> R
     Ok(())
 }
 
-pub fn unstake(ctx: Context<StakeGrime>, option: u8, index: u32) -> Result<()> {
+pub fn unstake(ctx: Context<StakeGrime>, _option: u8, _index: u32) -> Result<()> {
     let accts = ctx.accounts;
 
     require!(accts.user_info.status == true, GrimeCode::AlreadyStake);
     require!(accts.user_info.owner ==  accts.user.key(), GrimeCode::NotOwner);
 
-    let mut passing_time: i64 = 0;
-    let mut apy: u64 = 0;
+    let passing_time: i64;
+    let apy: u64;
 
     match accts.user_info.option {
         1_u8 => {
             passing_time = 7 * 3600 * 24;
-
             apy = 1;
         },
         2_u8=> {
             passing_time = 7 * 3600 * 24 * 30;
-
             apy = 5;
         },
         3_u8 => {
             passing_time = 7 * 3600 * 24 * 365;
-
             apy = 69;
         },
         _ => {
